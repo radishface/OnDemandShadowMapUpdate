@@ -21,7 +21,7 @@ Special thanks to [Remy](https://github.com/RemyUnity) for introducing me to thi
 ## Setup
 
 ### Cloning and importing the project
-1. Clone the repository, or download the latest release.
+1. Clone the repository, or download the latest [release](https://github.com/radishface/OnDemandShadowMapUpdate/releases).
 2. Import the project using **Unity 2021.3.33f1** or newer.
 3. Open the `IndoorsScene.unity` file to explore the example scene.
 
