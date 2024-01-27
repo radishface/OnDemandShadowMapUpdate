@@ -1,14 +1,9 @@
 # OnDemandShadowMapUpdate
-![OnDemandShadowMapUpdate](https://github.com/radishface/OnDemandShadowMapUpdate/assets/1553981/54fd027e-e9bf-4ce9-b8b5-00a4140ef72f)
-
-## Summary
-By default, High Definition Render Pipeline (HDRP) updates the realtime shadow maps every frame. This script adds more options to customize the on-demand shadow rendering to optimize the runtime performance. It relies on `RequestShadowMapRendering` and `RequestSubShadowMapRendering` functions to work. 
-
-For more information about the underlying API, please visit the [HDRP documentation](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@12.0/manual/Shadows-in-HDRP.html?q=requestshadowmaprendering#shadow-update-mode).
+By default, High Definition Render Pipeline (HDRP) updates the realtime shadow maps every frame. This script adds more options to customize the on-demand shadow rendering to optimize the runtime performance. It relies on `RequestShadowMapRendering` and `RequestSubShadowMapRendering` functions which you can read about in the [HDRP documentation](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@12.0/manual/Shadows-in-HDRP.html?q=requestshadowmaprendering#shadow-update-mode).
 
 Special thanks to [Remy](https://github.com/RemyUnity) for introducing me to this feature.
 
-### Features
+## Features
 * Update shadow map on camera movement.
   * This is especially useful for Directional Lights, since their shadows are view-dependent.
   * By default, the active camera is automatically selected.
