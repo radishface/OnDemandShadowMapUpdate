@@ -28,6 +28,6 @@ Special thanks to [Remy](https://github.com/RemyUnity) for introducing me to thi
 
 If done correctly, you should see the UI shown in the screenshot below:
 
-<img width="640" alt="OnDemandShadpwMapUpadte-MainUI" src="https://github.com/radishface/OnDemandShadowMapUpdate/assets/1553981/7c74d734-98d7-4ad0-9ee0-b4286891d687">
+<img width="640" alt="OnDemandShadpwMapUpadte-MainUI" src="https://github.com/radishface/OnDemandShadowMapUpdate/assets/1553981/06f0456d-94ef-40d5-9f7b-56663233db28">
 
 *Please note that any changes made to the script will only be visible in Play mode or in standalone builds.*
