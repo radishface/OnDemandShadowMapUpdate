@@ -22,8 +22,9 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
     public CounterMode counterMode = CounterMode.Frames;
 
     // Unity GameObjects and components
+    [HideInInspector]
+    public Camera mainCamera;
     private HDAdditionalLightData hdLight;
-    private Camera mainCamera;
 
     // Full shadow map refresh counter variables
     [HideInInspector]
@@ -173,7 +174,7 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
         }
     }
 
-        private void UpdateSubshadows()
+    private void UpdateSubshadows()
     {
         // Check which counter mode (frames or seconds) is selected
         switch (counterMode)
@@ -232,6 +233,11 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
             if (myScript.updateOnCameraMove)
             {
                 DrawGameObjectField("Camera To Track", ref myScript.cameraToTrack);
+                
+                if (myScript.cameraToTrack == null)
+                {
+                    EditorGUILayout.HelpBox("No Camera GameObject is assigned. The script will automatically assign the most recent MainCamera GameObject from the Hierarchy.", MessageType.Info);
+                }
             }
 
             // Shadow map to refresh UI
@@ -249,7 +255,6 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
                     {
                         DrawShadowMapGUIFloatField("Refresh Interval", ref myScript.fullShadowMapRefreshWaitSeconds);
                     }
-                    EditorGUILayout.HelpBox("All types of shadow casting lights are supported in this mode.", MessageType.Info);
                     break;
                 case ShadowMapToRefresh.SelectedCascade:
                     if (myScript.counterMode == CounterMode.Frames)
@@ -266,7 +271,6 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
                         DrawShadowMapGUIFloatField("Cascade 3 Refresh Interval", ref myScript.cascadesRefreshWaitSeconds[2]);
                         DrawShadowMapGUIFloatField("Cascade 4 Refresh Interval", ref myScript.cascadesRefreshWaitSeconds[3]);
                     }
-                    EditorGUILayout.HelpBox("This mode is intended for shadow casting Directional Lights. It supports up to four cascades.", MessageType.Info);
                     break;
                 case ShadowMapToRefresh.SelectedSubshadow:
                     if (myScript.counterMode == CounterMode.Frames)
@@ -287,7 +291,6 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
                         DrawShadowMapGUIFloatField("Subshadow 5 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[4]);
                         DrawShadowMapGUIFloatField("Subshadow 6 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[5]);
                     }
-                    EditorGUILayout.HelpBox("This mode is intended for shadow casting Point Lights. Each subshadow index corresponds to a face on the cubemap.", MessageType.Info);
                     break;  
             }
         }
