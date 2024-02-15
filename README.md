@@ -6,11 +6,11 @@ Special thanks to [Remy](https://github.com/RemyUnity) for introducing me to thi
 ## Features
 * Update shadow map on camera movement.
   * This is especially useful for Directional Lights, since their shadows are view-dependent.
-  * By default, the active camera is automatically selected.
+  * The MainCamera is automatically selected, if none is assigned.
 * Three shadow map update modes:
   * Entire Shadow Map. Intended for all light types.
-  * Selected Cascade. Intended for Directions Lights.
-  * Selected Subshadow. Intended for Point Lights.
+  * Cascades. Intended for Directions Lights.
+  * Subshadows. Intended for Point Lights.
 * Update shadows on a per-second or per-frame basis.
 
 ## Setup
@@ -28,6 +28,6 @@ Special thanks to [Remy](https://github.com/RemyUnity) for introducing me to thi
 
 If done correctly, you should see the UI shown in the screenshot below:
 
-<img width="640" alt="OnDemandShadpwMapUpadte-MainUI" src="https://github.com/radishface/OnDemandShadowMapUpdate/assets/1553981/06f0456d-94ef-40d5-9f7b-56663233db28">
+<img width="640" alt="OnDemandShadpwMapUpadte-MainUI" src="https://github.com/radishface/OnDemandShadowMapUpdate/assets/1553981/2804c69c-3124-4631-80c3-403f5ebba950">
 
 *Please note that any changes made to the script will only be visible in Play mode or in standalone builds.*
