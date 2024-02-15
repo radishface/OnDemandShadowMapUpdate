@@ -13,7 +13,7 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
     [HideInInspector]
     public bool updateOnCameraMove;
     [HideInInspector]
-    public GameObject cameraToTrack;
+    public Camera cameraToTrack;
     
     // Enums for the shadow map to refresh and the counter mode
     [HideInInspector]
@@ -71,7 +71,6 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
             Debug.LogError("There's no Camera GameObject with the MainCamera tag in the scene!");
             return;
         }
-        cameraToTrack = mainCamera.gameObject;
     }
 
     private void Update()
@@ -82,10 +81,10 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
             case ShadowMapToRefresh.EntireShadowMap:
                 UpdateShadowMap();
                 break;
-            case ShadowMapToRefresh.SelectedCascade:
+            case ShadowMapToRefresh.Cascades:
                 UpdateCascades();
                 break;
-            case ShadowMapToRefresh.SelectedSubshadow:
+            case ShadowMapToRefresh.Subshadows:
                 UpdateSubshadows();
                 break;
         }
@@ -227,21 +226,26 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
 
             OnDemandShadowMapUpdate myScript = (OnDemandShadowMapUpdate)target;
 
-            // Update on camera move UI
+            // Update on camera move UI toggle
             myScript.updateOnCameraMove = EditorGUILayout.Toggle("Update On Camera Movement", myScript.updateOnCameraMove);
 
             if (myScript.updateOnCameraMove)
             {
-                DrawGameObjectField("Camera To Track", ref myScript.cameraToTrack);
-                
+                DrawCameraField("Camera To Track", ref myScript.cameraToTrack);
+                                
+                // If the camera to track is null, display a help box and a assign the MainCamera automatically
                 if (myScript.cameraToTrack == null)
                 {
-                    EditorGUILayout.HelpBox("No Camera GameObject is assigned. The script will automatically assign the most recent MainCamera GameObject from the Hierarchy.", MessageType.Info);
+                    EditorGUILayout.HelpBox("The MainCamera GameObject will be automatically assigned if none is specified.", MessageType.Info);
+                    myScript.cameraToTrack = myScript.mainCamera;
                 }
             }
+            
+            // Counter mode UI
+            myScript.counterMode = (CounterMode)EditorGUILayout.EnumPopup("Counter Mode", myScript.counterMode);
 
             // Shadow map to refresh UI
-            myScript.shadowMapToRefresh = (ShadowMapToRefresh)EditorGUILayout.EnumPopup("Shadow Map Refresh Mode", myScript.shadowMapToRefresh);
+            myScript.shadowMapToRefresh = (ShadowMapToRefresh)EditorGUILayout.EnumPopup("Shadow Map To Update", myScript.shadowMapToRefresh);
 
             // Draw the appropriate UI based on the shadow map to refresh mode
             switch (myScript.shadowMapToRefresh)
@@ -249,47 +253,47 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
                 case ShadowMapToRefresh.EntireShadowMap:
                     if (myScript.counterMode == CounterMode.Frames)
                     {
-                        DrawShadowMapGUIIntField("Refresh Interval", ref myScript.fullShadowMapRefreshWaitFrames);
+                        DrawShadowMapGUIIntField("Update Interval", ref myScript.fullShadowMapRefreshWaitFrames);
                     }
                     else if (myScript.counterMode == CounterMode.Seconds)
                     {
-                        DrawShadowMapGUIFloatField("Refresh Interval", ref myScript.fullShadowMapRefreshWaitSeconds);
+                        DrawShadowMapGUIFloatField("Update Interval", ref myScript.fullShadowMapRefreshWaitSeconds);
                     }
                     break;
-                case ShadowMapToRefresh.SelectedCascade:
+                case ShadowMapToRefresh.Cascades:
                     if (myScript.counterMode == CounterMode.Frames)
                     {
-                        DrawShadowMapGUIIntField("Cascade 1 Refresh Interval", ref myScript.cascadesRefreshWaitFrames[0]);
-                        DrawShadowMapGUIIntField("Cascade 2 Refresh Interval", ref myScript.cascadesRefreshWaitFrames[1]);
-                        DrawShadowMapGUIIntField("Cascade 3 Refresh Interval", ref myScript.cascadesRefreshWaitFrames[2]);
-                        DrawShadowMapGUIIntField("Cascade 4 Refresh Interval", ref myScript.cascadesRefreshWaitFrames[3]);
+                        DrawShadowMapGUIIntField("Cascade 1 Update Interval", ref myScript.cascadesRefreshWaitFrames[0]);
+                        DrawShadowMapGUIIntField("Cascade 2 Update Interval", ref myScript.cascadesRefreshWaitFrames[1]);
+                        DrawShadowMapGUIIntField("Cascade 3 Update Interval", ref myScript.cascadesRefreshWaitFrames[2]);
+                        DrawShadowMapGUIIntField("Cascade 4 Update Interval", ref myScript.cascadesRefreshWaitFrames[3]);
                     }
                     else if (myScript.counterMode == CounterMode.Seconds)
                     {
-                        DrawShadowMapGUIFloatField("Cascade 1 Refresh Interval", ref myScript.cascadesRefreshWaitSeconds[0]);
-                        DrawShadowMapGUIFloatField("Cascade 2 Refresh Interval", ref myScript.cascadesRefreshWaitSeconds[1]);
-                        DrawShadowMapGUIFloatField("Cascade 3 Refresh Interval", ref myScript.cascadesRefreshWaitSeconds[2]);
-                        DrawShadowMapGUIFloatField("Cascade 4 Refresh Interval", ref myScript.cascadesRefreshWaitSeconds[3]);
+                        DrawShadowMapGUIFloatField("Cascade 1 Update Interval", ref myScript.cascadesRefreshWaitSeconds[0]);
+                        DrawShadowMapGUIFloatField("Cascade 2 Update Interval", ref myScript.cascadesRefreshWaitSeconds[1]);
+                        DrawShadowMapGUIFloatField("Cascade 3 Update Interval", ref myScript.cascadesRefreshWaitSeconds[2]);
+                        DrawShadowMapGUIFloatField("Cascade 4 Update Interval", ref myScript.cascadesRefreshWaitSeconds[3]);
                     }
                     break;
-                case ShadowMapToRefresh.SelectedSubshadow:
+                case ShadowMapToRefresh.Subshadows:
                     if (myScript.counterMode == CounterMode.Frames)
                     {
-                        DrawShadowMapGUIIntField("Subshadow 1 Refresh Interval", ref myScript.subshadowsRefreshWaitFrames[0]);
-                        DrawShadowMapGUIIntField("Subshadow 2 Refresh Interval", ref myScript.subshadowsRefreshWaitFrames[1]);
-                        DrawShadowMapGUIIntField("Subshadow 3 Refresh Interval", ref myScript.subshadowsRefreshWaitFrames[2]);
-                        DrawShadowMapGUIIntField("Subshadow 4 Refresh Interval", ref myScript.subshadowsRefreshWaitFrames[3]);
-                        DrawShadowMapGUIIntField("Subshadow 5 Refresh Interval", ref myScript.subshadowsRefreshWaitFrames[4]);
-                        DrawShadowMapGUIIntField("Subshadow 6 Refresh Interval", ref myScript.subshadowsRefreshWaitFrames[5]);
+                        DrawShadowMapGUIIntField("Subshadow 1 Update Interval", ref myScript.subshadowsRefreshWaitFrames[0]);
+                        DrawShadowMapGUIIntField("Subshadow 2 Update Interval", ref myScript.subshadowsRefreshWaitFrames[1]);
+                        DrawShadowMapGUIIntField("Subshadow 3 Update Interval", ref myScript.subshadowsRefreshWaitFrames[2]);
+                        DrawShadowMapGUIIntField("Subshadow 4 Update Interval", ref myScript.subshadowsRefreshWaitFrames[3]);
+                        DrawShadowMapGUIIntField("Subshadow 5 Update Interval", ref myScript.subshadowsRefreshWaitFrames[4]);
+                        DrawShadowMapGUIIntField("Subshadow 6 Update Interval", ref myScript.subshadowsRefreshWaitFrames[5]);
                     }
                     else if (myScript.counterMode == CounterMode.Seconds)
                     {
-                        DrawShadowMapGUIFloatField("Subshadow 1 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[0]);
-                        DrawShadowMapGUIFloatField("Subshadow 2 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[1]);
-                        DrawShadowMapGUIFloatField("Subshadow 3 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[2]);
-                        DrawShadowMapGUIFloatField("Subshadow 4 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[3]);
-                        DrawShadowMapGUIFloatField("Subshadow 5 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[4]);
-                        DrawShadowMapGUIFloatField("Subshadow 6 Refresh Interval", ref myScript.subshadowsRefreshWaitSeconds[5]);
+                        DrawShadowMapGUIFloatField("Subshadow 1 Update Interval", ref myScript.subshadowsRefreshWaitSeconds[0]);
+                        DrawShadowMapGUIFloatField("Subshadow 2 Update Interval", ref myScript.subshadowsRefreshWaitSeconds[1]);
+                        DrawShadowMapGUIFloatField("Subshadow 3 Update Interval", ref myScript.subshadowsRefreshWaitSeconds[2]);
+                        DrawShadowMapGUIFloatField("Subshadow 4 Update Interval", ref myScript.subshadowsRefreshWaitSeconds[3]);
+                        DrawShadowMapGUIFloatField("Subshadow 5 Update Interval", ref myScript.subshadowsRefreshWaitSeconds[4]);
+                        DrawShadowMapGUIFloatField("Subshadow 6 Update Interval", ref myScript.subshadowsRefreshWaitSeconds[5]);
                     }
                     break;  
             }
@@ -304,7 +308,7 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
             EditorGUILayout.BeginHorizontal();
             refreshWaitFrames = Mathf.Max(0, EditorGUILayout.IntField(label, refreshWaitFrames));
             EditorGUI.indentLevel--;
-            myScript.counterMode = (CounterMode)EditorGUILayout.EnumPopup(myScript.counterMode, GUILayout.MaxWidth(80));
+            EditorGUILayout.LabelField("Frames", GUILayout.MaxWidth(43));
             EditorGUILayout.EndHorizontal();
         }
         
@@ -317,18 +321,18 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
             EditorGUILayout.BeginHorizontal();
             refreshWaitSeconds = Mathf.Max(0, EditorGUILayout.FloatField(label, refreshWaitSeconds));
             EditorGUI.indentLevel--;
-            myScript.counterMode = (CounterMode)EditorGUILayout.EnumPopup(myScript.counterMode, GUILayout.MaxWidth(80));
+            EditorGUILayout.LabelField("Seconds", GUILayout.MaxWidth(52));
             EditorGUILayout.EndHorizontal();
         }
 
-        // Helper method for drawing GameObject fields
-        private void DrawGameObjectField(string label, ref GameObject gameObject)
+        // Draw a Camera GameObject field
+        private void DrawCameraField(string label, ref Camera gameObject)
         {
             OnDemandShadowMapUpdate myScript = (OnDemandShadowMapUpdate)target;
 
             EditorGUI.indentLevel++;
             EditorGUILayout.BeginHorizontal();
-            myScript.cameraToTrack = (GameObject)EditorGUILayout.ObjectField(label, gameObject, typeof(GameObject), true);
+            myScript.cameraToTrack = (Camera)EditorGUILayout.ObjectField(label, gameObject, typeof(Camera), true);
             EditorGUI.indentLevel--;
             EditorGUILayout.EndHorizontal();
         }
@@ -338,8 +342,8 @@ public class OnDemandShadowMapUpdate : MonoBehaviour
 public enum ShadowMapToRefresh
 {
     EntireShadowMap,
-    SelectedCascade,
-    SelectedSubshadow
+    Cascades,
+    Subshadows
 }
 
 public enum CounterMode
